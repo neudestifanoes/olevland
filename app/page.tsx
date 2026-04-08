@@ -139,21 +139,20 @@ function Hero() {
         </p>
 
         {/* CTAs */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-          <a
-            href="#waitlist"
-            className="w-full sm:w-auto inline-flex items-center justify-center px-5 py-2.5 text-sm font-semibold text-white bg-[#2563eb] rounded-md hover:bg-[#1d4ed8] transition-colors"
-          >
-            Request early access
-          </a>
+        <div className="flex items-center justify-center">
           <button
             onClick={() => setShowDemo(true)}
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-1 px-5 py-2.5 text-sm font-medium text-[#111827] border border-[#e2e8f0] rounded-md bg-white hover:border-[#2563eb] hover:text-[#2563eb] transition-colors"
+            className="relative overflow-hidden inline-flex items-center justify-center px-6 py-2.5 text-sm font-medium text-[#111827] border border-[#e2e8f0] rounded-md bg-white hover:border-[#2563eb] hover:text-[#2563eb] transition-colors"
           >
+            {/* Scan line */}
+            <span
+              className="pointer-events-none absolute inset-y-0 w-8"
+              style={{
+                background: "linear-gradient(90deg, transparent, rgba(37,99,235,0.25), transparent)",
+                animation: "scan 2.4s ease-in-out infinite",
+              }}
+            />
             Take a peek
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5">
-              <path d="M2 7h10M8 3l4 4-4 4" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
           </button>
         </div>
       </div>
