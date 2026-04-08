@@ -13,11 +13,11 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Know the moment AI touches your code.",
+  title: "OLEV — Know the moment AI touches your code.",
   description:
     "Know the moment an AI tool reads your proprietary source code. Canary tokens + OS-level monitoring for teams that ship sensitive software.",
   openGraph: {
-    title: "Know the moment AI touches your code.",
+    title: "OLEV — Know the moment AI touches your code.",
     description:
       "Know the moment an AI tool reads your proprietary source code.",
     url: "https://tryolev.com",
