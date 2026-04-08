@@ -2,6 +2,65 @@
 
 import { useState, useEffect } from "react";
 
+// ── Demo Modal ─────────────────────────────────────────────────────────────────
+
+function DemoModal({ onClose }: { onClose: () => void }) {
+  // Close on Escape
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") onClose();
+    }
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
+
+  // Prevent body scroll
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = ""; };
+  }, []);
+
+  return (
+    <div
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-8"
+      style={{ background: "rgba(0,0,0,0.6)", backdropFilter: "blur(4px)" }}
+      onClick={onClose}
+    >
+      <div
+        className="relative w-full max-w-5xl"
+        style={{ height: "80vh" }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Mac browser chrome */}
+        <div className="flex h-full flex-col rounded-xl overflow-hidden border border-[#e2e8f0] shadow-2xl">
+          {/* Chrome bar */}
+          <div className="flex-shrink-0 bg-[#f8fafc] border-b border-[#e2e8f0] px-4 py-2.5 flex items-center gap-3">
+            <div className="flex gap-1.5">
+              <button
+                onClick={onClose}
+                className="w-3 h-3 rounded-full bg-[#ff5f57] hover:bg-[#e0443e] transition-colors"
+                aria-label="Close"
+              />
+              <div className="w-3 h-3 rounded-full bg-[#febc2e]" />
+              <div className="w-3 h-3 rounded-full bg-[#28c840]" />
+            </div>
+            <div className="flex-1 bg-white border border-[#e2e8f0] rounded px-3 py-1 text-xs text-[#4b5563] font-mono">
+              app.olev.io/demo
+            </div>
+          </div>
+
+          {/* iframe */}
+          <iframe
+            src="https://olev-wheat.vercel.app/demo"
+            className="flex-1 w-full bg-white"
+            title="OLEV live demo"
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ── Nav ───────────────────────────────────────────────────────────────────────
 
 function Nav() {
@@ -55,6 +114,8 @@ function Nav() {
 // ── Hero ──────────────────────────────────────────────────────────────────────
 
 function Hero() {
+  const [showDemo, setShowDemo] = useState(false);
+
   return (
     <section className="pt-32 pb-20 px-6">
       <div className="max-w-3xl mx-auto text-center">
@@ -85,17 +146,18 @@ function Hero() {
           >
             Request early access
           </a>
-          <a
-            href="https://calendly.com/neudestifanoes/30min"
+          <button
+            onClick={() => setShowDemo(true)}
             className="w-full sm:w-auto inline-flex items-center justify-center gap-1 px-5 py-2.5 text-sm font-medium text-[#111827] border border-[#e2e8f0] rounded-md bg-white hover:border-[#2563eb] hover:text-[#2563eb] transition-colors"
           >
-            Book a 20-min demo
+            Take a peek
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" strokeWidth="1.5">
               <path d="M2 7h10M8 3l4 4-4 4" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
-          </a>
+          </button>
         </div>
       </div>
+      {showDemo && <DemoModal onClose={() => setShowDemo(false)} />}
     </section>
   );
 }
