@@ -135,7 +135,7 @@ function Hero() {
 
         {/* Subheadline */}
         <p className="text-lg text-[#4b5563] max-w-xl mx-auto leading-relaxed mb-9">
-          OLEV embeds silent trackers in your source files. If any AI agent executes them anywhere in the world, you get an alert. On employee machines, the OS-level agent catches reads at the kernel before anything leaves.
+          Canary tokens follow your code into any environment. The OS agent monitors file reads at the kernel level. Two layers, zero blind spots.
         </p>
 
         {/* CTAs */}
