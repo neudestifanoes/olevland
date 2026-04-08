@@ -19,22 +19,14 @@ function Nav() {
         scrolled ? "bg-[#f0f4ff]/95 backdrop-blur border-b border-[#e2e8f0]" : "bg-transparent"
       }`}
     >
-      <div className="max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">
+      <div className="relative max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">
         {/* Logo */}
-        <a href="#" className="flex items-center gap-2">
-          <div className="w-6 h-6 bg-[#2563eb] rounded-[4px] flex items-center justify-center">
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-              <circle cx="4" cy="4" r="2" fill="white" />
-              <circle cx="10" cy="4" r="2" fill="white" opacity="0.5" />
-              <circle cx="4" cy="10" r="2" fill="white" opacity="0.5" />
-              <circle cx="10" cy="10" r="2" fill="white" opacity="0.25" />
-            </svg>
-          </div>
-          <span className="font-semibold text-[#111827] tracking-tight text-[15px]">OLEV</span>
+        <a href="#" className="flex items-center">
+          <img src="/olevlogo.png" alt="OLEV" className="h-8 w-auto" />
         </a>
 
-        {/* Center links */}
-        <div className="hidden md:flex items-center gap-7 text-sm text-[#4b5563] font-medium">
+        {/* Center links — pinned to true center of container */}
+        <div className="absolute left-1/2 -translate-x-1/2 hidden md:flex items-center gap-7 text-sm text-[#4b5563] font-medium">
           <a href="#how-it-works" className="hover:text-[#111827] transition-colors">How it works</a>
           <a href="#features" className="hover:text-[#111827] transition-colors">Features</a>
           <a href="#faq" className="hover:text-[#111827] transition-colors">FAQ</a>
@@ -43,7 +35,7 @@ function Nav() {
         {/* CTAs */}
         <div className="flex items-center gap-2">
           <a
-            href="https://cal.com/placeholder"
+            href="https://calendly.com/neudestifanoes/30min"
             className="hidden md:inline-flex items-center px-3 py-1.5 text-sm font-medium text-[#2563eb] border border-[#2563eb] rounded-md hover:bg-[#2563eb]/5 transition-colors"
           >
             Book a demo
@@ -52,7 +44,7 @@ function Nav() {
             href="#waitlist"
             className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-white bg-[#2563eb] rounded-md hover:bg-[#1d4ed8] transition-colors"
           >
-            Request access
+            Request early access
           </a>
         </div>
       </div>
@@ -77,14 +69,12 @@ function Hero() {
 
         {/* Headline */}
         <h1 className="text-[2.6rem] sm:text-5xl font-semibold tracking-tight text-[#111827] leading-[1.1] mb-5">
-          Your developers use AI.
-          <br />
-          Do you know what it reads?
+          Know the moment AI touches your code.
         </h1>
 
         {/* Subheadline */}
         <p className="text-lg text-[#4b5563] max-w-xl mx-auto leading-relaxed mb-9">
-          OLEV detects when Cursor, Copilot, or any AI coding tool reads your proprietary source code — at the OS level, before it leaves the machine.
+          OLEV embeds silent trackers in your source files. If any AI agent executes them anywhere in the world, you get an alert. On employee machines, the OS-level agent catches reads at the kernel before anything leaves.
         </p>
 
         {/* CTAs */}
@@ -96,7 +86,7 @@ function Hero() {
             Request early access
           </a>
           <a
-            href="https://cal.com/placeholder"
+            href="https://calendly.com/neudestifanoes/30min"
             className="w-full sm:w-auto inline-flex items-center justify-center gap-1 px-5 py-2.5 text-sm font-medium text-[#111827] border border-[#e2e8f0] rounded-md bg-white hover:border-[#2563eb] hover:text-[#2563eb] transition-colors"
           >
             Book a 20-min demo
@@ -126,37 +116,24 @@ function DemoVideo() {
               <div className="w-3 h-3 rounded-full bg-[#dcfce7]" />
             </div>
             <div className="flex-1 bg-white border border-[#e2e8f0] rounded px-3 py-1 text-xs text-[#4b5563] font-mono">
-              olev-wheat.vercel.app/dashboard/alerts
+              olev.com/dashboard
             </div>
           </div>
 
           {/* Video area */}
-          <div className="relative bg-[#f0f4ff] aspect-video flex items-center justify-center">
-            {/* Placeholder until real video is dropped in */}
-            <div className="text-center">
-              <div className="w-16 h-16 rounded-full bg-[#2563eb] flex items-center justify-center mx-auto mb-4 cursor-pointer hover:bg-[#1d4ed8] transition-colors">
-                <svg width="22" height="22" viewBox="0 0 22 22" fill="white">
-                  <path d="M7 4l12 7-12 7V4z" />
-                </svg>
-              </div>
-              <p className="text-sm text-[#4b5563]">Demo video coming soon</p>
-              <p className="text-xs text-[#9ca3af] mt-1">Replace this div with a &lt;video&gt; or Loom embed</p>
-            </div>
-
-            {/* Uncomment and replace src when video is ready: */}
-            {/* <video
-              className="w-full h-full object-cover"
-              autoPlay
-              loop
-              muted
-              playsInline
-              src="/demo.mp4"
-            /> */}
+          <div className="aspect-video">
+            <iframe
+              className="w-full h-full"
+              src="https://www.youtube.com/embed/37cbDa6ZT3s?rel=0&modestbranding=1"
+              title="OLEV Demo"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            />
           </div>
         </div>
 
         <p className="text-center text-xs text-[#9ca3af] mt-3">
-          Watch live detection fire in under 2 seconds — no editing, no cuts
+          Watch live detection fire in under 2 seconds, no editing, no cuts
         </p>
       </div>
     </section>
@@ -170,21 +147,21 @@ const STEPS = [
     num: "01",
     title: "Connect your repos",
     description:
-      "Install the OLEV GitHub App on your org in one click. Your repos appear in the dashboard instantly — no PAT, no config files, no manual setup.",
+      "Install the OLEV GitHub App on your org in one click. Your repos appear in the dashboard instantly, no PAT, no config files, no manual setup.",
     video: "/videos/step-01-github.mp4",
   },
   {
     num: "02",
     title: "Inject canary policies",
     description:
-      "Select the files you want to monitor. OLEV injects invisible canary lines — single-line additions that don't affect behavior, don't break tests, and are undetectable to normal code review.",
+      "Select the files you want to monitor. OLEV injects invisible canary lines, single-line additions that don't affect behavior, don't break tests, and are undetectable to normal code review.",
     video: "/videos/step-02-inject.mp4",
   },
   {
     num: "03",
     title: "Deploy the OS watcher",
     description:
-      "Run one install command from your Settings page. The OLEV agent monitors kernel file-open syscalls in real time — catching AI tools that read your code even without executing it.",
+      "Run one install command from your Settings page. The OLEV agent monitors kernel file-open syscalls in real time, catching AI tools that read your code even without executing it.",
     video: "/videos/step-03-agent.mp4",
   },
   {
@@ -202,7 +179,7 @@ function HowItWorks() {
       <div className="max-w-5xl mx-auto">
         <div className="mb-14 text-center">
           <h2 className="text-2xl font-semibold text-[#111827] tracking-tight">How it works</h2>
-          <p className="text-[#4b5563] mt-2 text-sm">Four steps. No new infrastructure. No agent on every machine to start.</p>
+          <p className="text-[#4b5563] mt-2 text-sm">Four steps. No new infrastructure.</p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -219,10 +196,6 @@ function HowItWorks() {
                   src={step.video}
                   // poster is shown when video src isn't available yet
                 />
-                {/* Fallback overlay shown while video src is missing */}
-                <div className="absolute inset-0 flex items-center justify-center bg-[#f0f4ff]">
-                  <p className="text-xs text-[#9ca3af] font-mono">step-{step.num}.mp4</p>
-                </div>
               </div>
 
               {/* Text */}
@@ -241,74 +214,35 @@ function HowItWorks() {
 
 // ── Live Alert Feed ───────────────────────────────────────────────────────────
 
-const ALERTS = [
-  {
-    severity: "CRITICAL",
-    severityColor: "#dc2626",
-    severityBg: "#fef2f2",
-    file: "src/auth/middleware.ts",
-    description: "Canary executed on AWS us-east-1 — Cursor — not a human",
-    tags: ["Cursor", "AWS us-east-1", "54.80.42.11"],
-    time: "2 min ago",
-  },
-  {
-    severity: "HIGH",
-    severityColor: "#d97706",
-    severityBg: "#fffbeb",
-    file: "src/payments/stripe.ts",
-    description: "Canary token deleted from file — AI agent covering tracks",
-    tags: ["Deletion", "GitHub App", "PR #214"],
-    time: "18 min ago",
-  },
-  {
-    severity: "INFO",
-    severityColor: "#2563eb",
-    severityBg: "#eff6ff",
-    file: "lib/db/schema.prisma",
-    description: "File read on local IP — Claude Code — low risk, local dev",
-    tags: ["Claude Code", "192.168.1.12", "Local"],
-    time: "1 hr ago",
-  },
-];
 
 function AlertFeed() {
   return (
     <section className="px-6 pb-28">
-      <div className="max-w-3xl mx-auto">
+      <div className="max-w-4xl mx-auto">
         <div className="mb-10 text-center">
           <h2 className="text-2xl font-semibold text-[#111827] tracking-tight">What alerts look like</h2>
           <p className="text-[#4b5563] mt-2 text-sm">Plain English. Every alert tells you who, what, where, and how risky.</p>
         </div>
 
-        <div className="bg-white rounded-xl border border-[#e2e8f0] overflow-hidden divide-y divide-[#f1f5f9]">
-          {ALERTS.map((a, i) => (
-            <div key={i} className="px-5 py-4 flex items-start gap-4">
-              {/* Severity dot */}
-              <div className="mt-0.5 flex-shrink-0">
-                <span
-                  className="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-semibold"
-                  style={{ color: a.severityColor, backgroundColor: a.severityBg }}
-                >
-                  {a.severity}
-                </span>
-              </div>
+        {/* Screenshot composite — list view with detail panel overlapping */}
+        <div className="relative">
+          {/* Main: alerts list */}
+          <div className="rounded-xl overflow-hidden border border-[#e2e8f0] shadow-md">
+            <img
+              src="/alerts-list.png"
+              alt="OLEV alerts dashboard"
+              className="w-full block"
+            />
+          </div>
 
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between gap-4">
-                  <span className="text-[13px] font-mono text-[#111827] truncate">{a.file}</span>
-                  <span className="text-[11px] text-[#9ca3af] flex-shrink-0">{a.time}</span>
-                </div>
-                <p className="text-sm text-[#4b5563] mt-1">{a.description}</p>
-                <div className="flex flex-wrap gap-1.5 mt-2">
-                  {a.tags.map((tag) => (
-                    <span key={tag} className="px-2 py-0.5 bg-[#f1f5f9] rounded text-[11px] text-[#4b5563] font-mono">
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </div>
-          ))}
+          {/* Overlay: expanded alert detail panel — matches height of list */}
+          <div className="absolute top-0 right-4 sm:right-8 h-full rounded-xl overflow-hidden border border-[#e2e8f0] shadow-2xl">
+            <img
+              src="/alert-detail.png"
+              alt="OLEV alert detail"
+              className="h-full w-auto block"
+            />
+          </div>
         </div>
       </div>
     </section>
@@ -326,12 +260,12 @@ const FEATURES = [
   {
     icon: "⬡",
     title: "OS-level file watcher",
-    description: "Kernel syscall monitoring via fs_usage. Catches AI reads before any network call is made.",
+    description: "Kernel syscall monitoring. Catches AI reads before any network call is made.",
   },
   {
     icon: "⬡",
     title: "Cloud IP detection",
-    description: "AWS, GCP, and Azure ASN resolution. Know immediately if execution happened on cloud infrastructure — not a human.",
+    description: "AWS, GCP, and Azure ASN resolution. Know immediately if execution happened on cloud infrastructure, not a human.",
   },
   {
     icon: "⬡",
@@ -346,7 +280,7 @@ const FEATURES = [
   {
     icon: "⬡",
     title: "Canary deletion alerts",
-    description: "Detects when an AI agent removes a canary line from your code — a high-signal indicator of adversarial behavior.",
+    description: "Detects when an AI agent removes a canary line from your code, a high-signal indicator of adversarial behavior.",
   },
 ];
 
@@ -382,7 +316,7 @@ function Features() {
 const FAQ_ITEMS = [
   {
     q: "What AI tools does OLEV detect?",
-    a: "Cursor, GitHub Copilot, Claude Code, Aider, Devin, Sourcegraph Cody, and Continue.dev — as well as any process that executes injected canary code, including raw scripts and CI agents.",
+    a: "Cursor, GitHub Copilot, Claude Code, Aider, Devin, Sourcegraph Cody, and Continue.dev, as well as any process that executes injected canary code, including raw scripts and CI agents. Expanding soon to cover tracked copy-paste detection for web LLMs including ChatGPT, Gemini, and Claude.ai.",
   },
   {
     q: "Does this require changes to my codebase?",
@@ -390,19 +324,15 @@ const FAQ_ITEMS = [
   },
   {
     q: "What about raw pastes into ChatGPT?",
-    a: "If the code is pasted without execution, the canary token won't fire — that's an accepted gap. The OS-level agent covers file reads on managed devices. Execution-based canaries cover everything that runs.",
-  },
-  {
-    q: "Is the OS agent production-ready?",
-    a: "The current agent is a macOS prototype using fs_usage. It's demo-quality and suitable for pilots. Production-grade cross-platform monitoring (using Apple ESF and eBPF on Linux) is on the roadmap post-funding.",
+    a: "Coming in the next update: silent read detection via Apple ESF on macOS and ETW on Windows, catching file access before anything is pasted or sent. Right now, if code is pasted without execution the canary won't fire. The OS agent covers reads on managed devices.",
   },
   {
     q: "What does pricing look like?",
-    a: "We're in pilot pricing right now. Early access companies set the pricing — reach out and we'll talk through what makes sense for your team size and risk profile.",
+    a: "We're in pilot pricing right now. Early access companies set the pricing, reach out and we'll talk through what makes sense for your team size and risk profile.",
   },
   {
     q: "Is my source code ever sent to OLEV servers?",
-    a: "No. OLEV never sees your source code. Canary tokens fire a minimal beacon (token ID, IP, timestamp, user agent) when executed. The OS agent reports file paths and process names — not file contents.",
+    a: "No. OLEV never sees your source code. Canary tokens fire a minimal beacon (token ID, IP, timestamp, user agent) when executed. The OS agent reports file paths and process names, not file contents.",
   },
 ];
 
@@ -452,7 +382,10 @@ function FAQ() {
 // ── Waitlist ──────────────────────────────────────────────────────────────────
 
 function Waitlist() {
+  const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
+  const [company, setCompany] = useState("");
+  const [companyUrl, setCompanyUrl] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "done" | "error">("idle");
 
   async function handleSubmit(e: React.SyntheticEvent<HTMLFormElement>) {
@@ -463,7 +396,7 @@ function Waitlist() {
       const res = await fetch("/api/waitlist", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ fullName, email, company, companyUrl }),
       });
       if (!res.ok) throw new Error();
       setStatus("done");
@@ -487,19 +420,40 @@ function Waitlist() {
             You&apos;re on the list. We&apos;ll be in touch shortly.
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-2 mb-6">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-2.5 mb-6 text-left">
+            <input
+              type="text"
+              placeholder="Full name"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              className="w-full px-4 py-2.5 text-sm border border-[#e2e8f0] rounded-md outline-none focus:border-[#2563eb] focus:ring-1 focus:ring-[#2563eb] transition"
+            />
             <input
               type="email"
               required
               placeholder="you@company.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="flex-1 px-4 py-2.5 text-sm border border-[#e2e8f0] rounded-md outline-none focus:border-[#2563eb] focus:ring-1 focus:ring-[#2563eb] transition"
+              className="w-full px-4 py-2.5 text-sm border border-[#e2e8f0] rounded-md outline-none focus:border-[#2563eb] focus:ring-1 focus:ring-[#2563eb] transition"
+            />
+            <input
+              type="text"
+              placeholder="Company name (optional)"
+              value={company}
+              onChange={(e) => setCompany(e.target.value)}
+              className="w-full px-4 py-2.5 text-sm border border-[#e2e8f0] rounded-md outline-none focus:border-[#2563eb] focus:ring-1 focus:ring-[#2563eb] transition"
+            />
+            <input
+              type="text"
+              placeholder="Company website (optional)"
+              value={companyUrl}
+              onChange={(e) => setCompanyUrl(e.target.value)}
+              className="w-full px-4 py-2.5 text-sm border border-[#e2e8f0] rounded-md outline-none focus:border-[#2563eb] focus:ring-1 focus:ring-[#2563eb] transition"
             />
             <button
               type="submit"
               disabled={status === "loading"}
-              className="px-5 py-2.5 text-sm font-semibold text-white bg-[#2563eb] rounded-md hover:bg-[#1d4ed8] transition-colors disabled:opacity-60"
+              className="w-full px-5 py-2.5 text-sm font-semibold text-white bg-[#2563eb] rounded-md hover:bg-[#1d4ed8] transition-colors disabled:opacity-60"
             >
               {status === "loading" ? "Joining..." : "Join waitlist"}
             </button>
@@ -507,7 +461,7 @@ function Waitlist() {
         )}
 
         {status === "error" && (
-          <p className="text-xs text-[#dc2626] mb-4">Something went wrong. Email us at founders@olev.ai</p>
+          <p className="text-xs text-[#dc2626] mb-4">Something went wrong. Email us at founders@tryolev.com</p>
         )}
 
         <div className="flex items-center gap-3 text-xs text-[#9ca3af] mb-6">
@@ -517,7 +471,7 @@ function Waitlist() {
         </div>
 
         <a
-          href="https://cal.com/placeholder"
+          href="https://calendly.com/neudestifanoes/30min"
           className="inline-flex items-center gap-1.5 text-sm font-medium text-[#2563eb] hover:underline"
         >
           Book a 20-min demo with the founders
@@ -537,21 +491,13 @@ function Footer() {
     <footer className="border-t border-[#e2e8f0] px-6 py-6 bg-white">
       <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-[#4b5563]">
         <div className="flex items-center gap-2">
-          <div className="w-5 h-5 bg-[#2563eb] rounded-[3px] flex items-center justify-center">
-            <svg width="11" height="11" viewBox="0 0 14 14" fill="none">
-              <circle cx="4" cy="4" r="2" fill="white" />
-              <circle cx="10" cy="4" r="2" fill="white" opacity="0.5" />
-              <circle cx="4" cy="10" r="2" fill="white" opacity="0.5" />
-              <circle cx="10" cy="10" r="2" fill="white" opacity="0.25" />
-            </svg>
-          </div>
-          <span className="font-medium text-[#111827]">OLEV</span>
+          <img src="/olevlogo.png" alt="OLEV" className="h-6 w-auto" />
           <span className="text-[#9ca3af]">© 2026</span>
         </div>
         <div className="flex items-center gap-5">
           <a href="/privacy" className="hover:text-[#111827] transition-colors">Privacy</a>
           <a href="/terms" className="hover:text-[#111827] transition-colors">Terms</a>
-          <a href="mailto:founders@olev.ai" className="hover:text-[#111827] transition-colors">founders@olev.ai</a>
+          <a href="mailto:founders@tryolev.com" className="hover:text-[#111827] transition-colors">founders@tryolev.com</a>
         </div>
       </div>
     </footer>
@@ -565,8 +511,21 @@ export default function Home() {
     <>
       <Nav />
       <main>
-        <Hero />
-        <DemoVideo />
+        <div className="relative">
+          {/* Grid background — fades out by bottom of demo video */}
+          <div
+            className="absolute inset-0 pointer-events-none -z-10"
+            style={{
+              backgroundImage:
+                "linear-gradient(rgba(37,99,235,0.07) 1px, transparent 1px), linear-gradient(to right, rgba(37,99,235,0.07) 1px, transparent 1px)",
+              backgroundSize: "44px 44px",
+              WebkitMaskImage: "linear-gradient(to bottom, black 0%, black 50%, transparent 100%)",
+              maskImage: "linear-gradient(to bottom, black 0%, black 50%, transparent 100%)",
+            }}
+          />
+          <Hero />
+          <DemoVideo />
+        </div>
         <HowItWorks />
         <AlertFeed />
         <Features />

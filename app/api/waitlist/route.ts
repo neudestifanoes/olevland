@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
-  const { email } = await req.json();
+  const { fullName, email, company, companyUrl } = await req.json();
   if (!email || typeof email !== "string") {
     return NextResponse.json({ error: "Invalid email" }, { status: 400 });
   }
@@ -20,7 +20,11 @@ export async function POST(req: NextRequest) {
       },
       body: JSON.stringify({
         email,
+        firstName: fullName?.split(" ")[0] ?? undefined,
+        lastName: fullName?.split(" ").slice(1).join(" ") || undefined,
         source: "landing-waitlist",
+        ...(company && { companyName: company }),
+        ...(companyUrl && { companyUrl }),
         mailingLists: loopsListId ? { [loopsListId]: true } : undefined,
       }),
     });
