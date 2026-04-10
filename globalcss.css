@@ -1,0 +1,352 @@
+@import url('https://fonts.googleapis.com/css2?family=Host+Grotesk:wght@400;500;600&family=Manrope:wght@400;500;600&display=swap');
+
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
+
+/* OLEV design tokens + shadcn semantic variables (dark dashboard = default) */
+:root {
+/* Surfaces: Soft gray base with pure white cards */
+--bg-base: #f1f5f9;
+--bg-surface: #FFFFFF;
+--border-subtle: #E5E7EB;
+
+/* Brand: Authoritative Corporate Blue */
+--primary: #2563EB;
+--primary-foreground: #FFFFFF;
+--accent-neon: var(--primary);
+
+/* Typography: High contrast charcoal */
+--text-primary: #111827;
+--text-secondary: #4B5563;
+--font-heading: 'Host Grotesk', sans-serif;
+--font-body: 'Manrope', sans-serif;
+--weight-regular: 400;
+--weight-medium: 500;
+--weight-semibold: 600;
+
+/* Status: Darkened for light mode readability */
+--status-critical: #DC2626;
+--status-warning: #D97706;
+--status-success: #16A34A;
+--status-medium: #CA8A04;
+--status-low: #9CA3AF;
+
+/* Alert source accents */
+--source-canary: #2563EB;
+--source-prompt: #7C3AED;
+--source-deletion: #C026D3;
+--source-clipboard: #EA580C;
+--source-browser: #0D9488;
+
+  /* Modal / overlay */
+  --overlay-backdrop: rgb(17 24 39 / 0.45);
+
+  /* Stats cards (rendered on --primary surface) */
+  --stats-icon-surface: color-mix(in oklab, var(--primary-foreground) 18%, transparent);
+  --stats-icon-fg: var(--primary-foreground);
+  --stats-icon-inset-highlight: color-mix(in oklab, white 10%, transparent);
+  --stats-label: color-mix(in oklab, var(--primary-foreground) 85%, transparent);
+  --stats-value: var(--primary-foreground);
+  --stats-trend-bg: var(--bg-input);
+  --stats-trend-fg: var(--text-primary);
+
+  /* Dashboard dot grid base */
+  --olev-dot-grid-bg: var(--bg-base);
+
+  /* Chart UI */
+  --chart-tooltip-cursor: color-mix(in oklab, white 6%, transparent);
+
+  /* Type scale */
+  --text-h1: 36px;
+  --leading-h1: 40px;
+  --text-h2: 30px;
+  --leading-h2: 36px;
+  --text-h3: 24px;
+  --leading-h3: 32px;
+  --text-body-large: 18px;
+  --leading-body-large: 28px;
+  --text-body-default: 16px;
+  --leading-body-default: 24px;
+  --text-caption-default: 14px;
+  --leading-caption-default: 16px;
+  --text-caption-small: 12px;
+  --leading-caption-small: 18px;
+
+  /* Radius & spacing — tighter, consistent with shadcn rounded-* */
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 6px;
+  --spacing-badge-y: 4px;
+  --spacing-badge-x: 8px;
+  --spacing-btn-y: 8px;
+  --spacing-btn-x: 16px;
+  --spacing-input-y: 10px;
+  --spacing-input-x: 14px;
+  --spacing-card: 24px;
+
+  --bg-critical-subtle: color-mix(in oklab, var(--status-critical) 12%, white);
+  --bg-warning-subtle: color-mix(in oklab, var(--status-warning) 14%, white);
+  --bg-success-subtle: color-mix(in oklab, var(--status-success) 12%, white);
+
+  --bg-input: #FFFFFF;
+  --border-input: var(--border-subtle);
+  --border-input-focus: var(--primary);
+
+  /* shadcn — map to OLEV */
+  --background: var(--bg-base);
+  --foreground: var(--text-primary);
+  --card: var(--bg-surface);
+  --card-foreground: var(--text-primary);
+  --popover: var(--bg-surface);
+  --popover-foreground: var(--text-primary);
+  --secondary: #F3F4F6;
+  --secondary-foreground: var(--text-primary);
+  --muted: #F3F4F6;
+  --muted-foreground: var(--text-secondary);
+  --accent: #EEF2FF;
+  --accent-foreground: var(--text-primary);
+  --destructive: var(--status-critical);
+  --border: var(--border-subtle);
+  --input: var(--bg-input);
+  --ring: var(--primary);
+  --chart-1: var(--primary);
+  --chart-2: var(--text-secondary);
+  --chart-3: #7C3AED;
+  --chart-4: #0D9488;
+  --chart-5: #EA580C;
+  /* Sidebar: same family as main shell (not a separate black rail) */
+  --sidebar: var(--bg-surface);
+  --sidebar-foreground: var(--text-primary);
+  --sidebar-primary: var(--primary);
+  --sidebar-primary-foreground: var(--primary-foreground);
+  --sidebar-accent: color-mix(in oklab, var(--border-subtle) 50%, var(--bg-surface));
+  --sidebar-accent-foreground: var(--text-primary);
+  --sidebar-border: var(--border-subtle);
+  --sidebar-ring: var(--ring);
+}
+
+@theme inline {
+  --font-sans: var(--font-body);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  /* App-specific (badges, stats) */
+  --color-critical: var(--status-critical);
+  --color-warning: var(--status-warning);
+  --color-success: var(--status-success);
+  --color-neon: var(--primary);
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 6px;
+  --radius-xl: 6px;
+  --radius-2xl: 8px;
+}
+
+/* Do not add unlayered `* { margin/padding: 0 }` — it overrides @layer utilities (p-8, gap-4, etc.). Preflight from @import "tailwindcss" handles reset. */
+
+@layer base {
+  *,
+  ::before,
+  ::after {
+    box-sizing: border-box;
+  }
+  /* Avoid `* { @apply border-border }` — in v4 it can fight layout/spacing. Components set their own borders. */
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-body);
+    font-weight: var(--weight-regular);
+    min-height: 100vh;
+  }
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-heading);
+    font-weight: var(--weight-semibold);
+  }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-base);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-subtle);
+  border-radius: 3px;
+}
+
+/*
+ * Dot grid — main dashboard panel.
+ * Uses !important so Tailwind `bg-background` on SidebarInset cannot strip the pattern.
+ * Dots follow --primary at low opacity; change :root --primary to retheme.
+ */
+.olev-dot-grid {
+  --olev-dot-fg: color-mix(in oklab, var(--primary) 10%, transparent);
+  background-color: var(--olev-dot-grid-bg) !important;
+  /* background-image: radial-gradient(
+    circle at center,
+    var(--olev-dot-fg) 2px,
+    transparent 2px
+  ) !important;
+  background-size: 40px 40px !important; */
+  background-repeat: repeat !important;
+  background-position: 0 0 !important;
+  background-attachment: scroll !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .olev-dot-grid {
+    --olev-dot-fg: color-mix(in oklab, var(--primary) 16%, transparent);
+  }
+}
+
+/* Severity badges — filled tint + matching border */
+@layer components {
+  .badge-critical {
+    @apply inline-flex items-center justify-center border px-2 py-0.5 text-[0.65rem] font-bold uppercase tracking-wide;
+    border-radius: var(--radius-sm);
+    background: color-mix(in oklab, var(--status-critical) 12%, white);
+    color: var(--status-critical);
+    border-color: color-mix(in oklab, var(--status-critical) 30%, transparent);
+  }
+  .badge-high {
+    @apply inline-flex items-center justify-center border px-2 py-0.5 text-[0.65rem] font-bold uppercase tracking-wide;
+    border-radius: var(--radius-sm);
+    background: color-mix(in oklab, var(--status-warning) 14%, white);
+    color: var(--status-warning);
+    border-color: color-mix(in oklab, var(--status-warning) 30%, transparent);
+  }
+  .badge-medium {
+    @apply inline-flex items-center justify-center border px-2 py-0.5 text-[0.65rem] font-bold uppercase tracking-wide;
+    border-radius: var(--radius-sm);
+    background: color-mix(in oklab, var(--status-medium) 14%, white);
+    color: var(--status-medium);
+    border-color: color-mix(in oklab, var(--status-medium) 28%, transparent);
+  }
+  .badge-low {
+    @apply inline-flex items-center justify-center border px-2 py-0.5 text-[0.65rem] font-bold uppercase tracking-wide;
+    border-radius: var(--radius-sm);
+    background: color-mix(in oklab, var(--status-low) 18%, white);
+    color: color-mix(in oklab, var(--status-low) 80%, black);
+    border-color: color-mix(in oklab, var(--status-low) 35%, transparent);
+  }
+
+  /* Source pills — filled tint + matching border */
+  .badge-source-canary {
+    background: color-mix(in oklab, var(--source-canary) 10%, white);
+    border-color: color-mix(in oklab, var(--source-canary) 30%, transparent);
+    color: var(--source-canary);
+  }
+  .badge-source-prompt {
+    background: color-mix(in oklab, var(--source-prompt) 10%, white);
+    border-color: color-mix(in oklab, var(--source-prompt) 30%, transparent);
+    color: var(--source-prompt);
+  }
+  .badge-source-os_agent {
+    background: color-mix(in oklab, var(--primary) 10%, white);
+    border-color: color-mix(in oklab, var(--primary) 30%, transparent);
+    color: var(--primary);
+  }
+  .badge-source-deletion {
+    background: color-mix(in oklab, var(--source-deletion) 10%, white);
+    border-color: color-mix(in oklab, var(--source-deletion) 30%, transparent);
+    color: var(--source-deletion);
+  }
+  .badge-source-clipboard {
+    background: color-mix(in oklab, var(--source-clipboard) 10%, white);
+    border-color: color-mix(in oklab, var(--source-clipboard) 30%, transparent);
+    color: var(--source-clipboard);
+  }
+  .badge-source-browser {
+    background: color-mix(in oklab, var(--source-browser) 10%, white);
+    border-color: color-mix(in oklab, var(--source-browser) 30%, transparent);
+    color: var(--source-browser);
+  }
+
+  /* Unified secondary callout style for code-like/supporting blocks */
+  .secondary-callout,
+  input.secondary-callout,
+  textarea.secondary-callout,
+  pre.secondary-callout {
+    border-color: var(--border) !important;
+    background-color: color-mix(in oklab, var(--muted) 30%, transparent) !important;
+    color: var(--muted-foreground) !important;
+    border-radius: var(--radius-md);
+  }
+
+  /* Recharts defaults → design tokens (keeps library stroke colors out of TSX) */
+  [data-slot='chart'] .recharts-cartesian-grid line {
+    stroke: color-mix(in oklab, var(--border) 50%, transparent);
+  }
+  [data-slot='chart'] .recharts-polar-grid line {
+    stroke: var(--border);
+  }
+  [data-slot='chart'] .recharts-reference-line line {
+    stroke: var(--border);
+  }
+  [data-slot='chart'] .recharts-curve.recharts-tooltip-cursor {
+    stroke: var(--border);
+  }
+  [data-slot='chart'] .recharts-rectangle.recharts-tooltip-cursor {
+    fill: var(--muted);
+  }
+  [data-slot='chart'] .recharts-radial-bar-background-sector {
+    fill: var(--muted);
+  }
+  [data-slot='chart'] .recharts-dot[stroke='#fff'],
+  [data-slot='chart'] .recharts-sector[stroke='#fff'] {
+    stroke: transparent;
+  }
+}
+
+/* ── Sheet / drawer edges ───────────────────────────────────────────────────── */
+/* Replace the default shadow-lg (which casts a harsh dark edge on the
+   adjacent side) with a soft, directional elevation that matches the
+   light surface palette. */
+[data-slot='sheet-content'][data-side='right'] {
+  border-left-color: var(--border-subtle);
+  box-shadow: -2px 0 0 0 var(--border-subtle), -12px 0 40px -8px rgb(0 0 0 / 0.06);
+}
+[data-slot='sheet-content'][data-side='left'] {
+  border-right-color: var(--border-subtle);
+  box-shadow: 2px 0 0 0 var(--border-subtle), 12px 0 40px -8px rgb(0 0 0 / 0.06);
+}
+[data-slot='sheet-content'][data-side='bottom'] {
+  border-top-color: var(--border-subtle);
+  box-shadow: 0 -2px 0 0 var(--border-subtle), 0 -12px 40px -8px rgb(0 0 0 / 0.06);
+}
+[data-slot='sheet-content'][data-side='top'] {
+  border-bottom-color: var(--border-subtle);
+  box-shadow: 0 2px 0 0 var(--border-subtle), 0 12px 40px -8px rgb(0 0 0 / 0.06);
+}

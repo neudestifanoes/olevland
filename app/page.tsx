@@ -1,65 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-
-// ── Demo Modal ─────────────────────────────────────────────────────────────────
-
-function DemoModal({ onClose }: { onClose: () => void }) {
-  // Close on Escape
-  useEffect(() => {
-    function onKey(e: KeyboardEvent) {
-      if (e.key === "Escape") onClose();
-    }
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [onClose]);
-
-  // Prevent body scroll
-  useEffect(() => {
-    document.body.style.overflow = "hidden";
-    return () => { document.body.style.overflow = ""; };
-  }, []);
-
-  return (
-    <div
-      className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-8"
-      style={{ background: "rgba(0,0,0,0.6)", backdropFilter: "blur(4px)" }}
-      onClick={onClose}
-    >
-      <div
-        className="relative w-full max-w-5xl"
-        style={{ height: "80vh" }}
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Mac browser chrome */}
-        <div className="flex h-full flex-col rounded-xl overflow-hidden border border-[#e2e8f0] shadow-2xl">
-          {/* Chrome bar */}
-          <div className="flex-shrink-0 bg-[#f8fafc] border-b border-[#e2e8f0] px-4 py-2.5 flex items-center gap-3">
-            <div className="flex gap-1.5">
-              <button
-                onClick={onClose}
-                className="w-3 h-3 rounded-full bg-[#ff5f57] hover:bg-[#e0443e] transition-colors"
-                aria-label="Close"
-              />
-              <div className="w-3 h-3 rounded-full bg-[#febc2e]" />
-              <div className="w-3 h-3 rounded-full bg-[#28c840]" />
-            </div>
-            <div className="flex-1 bg-white border border-[#e2e8f0] rounded px-3 py-1 text-xs text-[#4b5563] font-mono">
-              app.olev.io/demo
-            </div>
-          </div>
-
-          {/* iframe */}
-          <iframe
-            src="https://olev-wheat.vercel.app/demo"
-            className="flex-1 w-full bg-white"
-            title="OLEV live demo"
-          />
-        </div>
-      </div>
-    </div>
-  );
-}
+import { useState, useEffect, useLayoutEffect, useRef, type MutableRefObject } from "react";
+import { motion, useMotionValueEvent, useScroll, useTransform } from "framer-motion";
 
 // ── Nav ───────────────────────────────────────────────────────────────────────
 
@@ -68,42 +10,71 @@ function Nav() {
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
-    window.addEventListener("scroll", onScroll);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  const demoClasses =
+    "items-center font-medium text-primary border border-primary rounded-md hover:bg-primary/5 transition-colors whitespace-nowrap";
+  const waitlistClasses =
+    "items-center font-medium text-primary-foreground bg-primary rounded-md hover:bg-[var(--primary-hover)] transition-colors whitespace-nowrap";
+
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-200 ${
-        scrolled ? "bg-[#f0f4ff]/95 backdrop-blur border-b border-[#e2e8f0]" : "bg-transparent"
+      className={`fixed left-0 right-0 z-50 flex justify-center transition-[top,padding] duration-300 ease-out ${
+        scrolled ? "top-3 sm:top-4" : "top-0"
       }`}
     >
-      <div className="relative max-w-5xl mx-auto px-6 h-14 flex items-center justify-between">
-        {/* Logo */}
-        <a href="#" className="flex items-center">
-          <img src="/olevlogo.png" alt="OLEV" className="h-8 w-auto" />
+      <div
+        className={`relative flex w-full items-center justify-between transition-all duration-300 ease-out ${
+          scrolled
+            ? "h-11 max-w-[min(100vw-1.25rem,22rem)] rounded-lg border border-border bg-background/95 px-3 shadow-md backdrop-blur-md sm:h-12 sm:max-w-[26rem] sm:px-4"
+            : "h-14 max-w-5xl bg-transparent px-6"
+        }`}
+      >
+        <a href="#" className="flex shrink-0 items-center">
+          <img
+            src="/olevlogo.png"
+            alt="OLEV"
+            className={`w-auto transition-[height] duration-300 ${scrolled ? "h-6 sm:h-7" : "h-8"}`}
+          />
         </a>
 
-        {/* Center links — pinned to true center of container */}
-        <div className="absolute left-1/2 -translate-x-1/2 hidden md:flex items-center gap-7 text-sm text-[#4b5563] font-medium">
-          <a href="#how-it-works" className="hover:text-[#111827] transition-colors">How it works</a>
-          <a href="#features" className="hover:text-[#111827] transition-colors">Features</a>
-          <a href="#faq" className="hover:text-[#111827] transition-colors">FAQ</a>
-        </div>
+        {!scrolled && (
+          <div className="absolute left-1/2 hidden -translate-x-1/2 md:flex items-center gap-7 text-sm font-medium text-muted-foreground">
+            <a href="#how-it-works" className="hover:text-foreground transition-colors">
+              How it works
+            </a>
+            <a href="#features" className="hover:text-foreground transition-colors">
+              Features
+            </a>
+            <a href="#faq" className="hover:text-foreground transition-colors">
+              FAQ
+            </a>
+          </div>
+        )}
 
-        {/* CTAs */}
-        <div className="flex items-center gap-2">
+        <div className="flex min-w-0 shrink-0 items-center gap-1.5 sm:gap-2">
           <a
             href="https://calendly.com/neudestifanoes/30min"
-            className="hidden md:inline-flex items-center px-3 py-1.5 text-sm font-medium text-[#2563eb] border border-[#2563eb] rounded-md hover:bg-[#2563eb]/5 transition-colors"
+            className={`inline-flex ${demoClasses} ${
+              scrolled
+                ? "px-2 py-1.5 text-[11px] sm:px-2.5 sm:py-1.5 sm:text-xs"
+                : "hidden px-3 py-1.5 text-sm md:inline-flex"
+            }`}
           >
             Book a demo
           </a>
           <a
             href="#waitlist"
-            className="inline-flex items-center px-3 py-1.5 text-sm font-medium text-white bg-[#2563eb] rounded-md hover:bg-[#1d4ed8] transition-colors"
+            className={`inline-flex ${waitlistClasses} ${
+              scrolled
+                ? "px-2.5 py-1.5 text-[11px] sm:px-3 sm:py-1.5 sm:text-xs"
+                : "px-3 py-1.5 text-sm"
+            }`}
           >
-            Request early access
+            Join waitlist
           </a>
         </div>
       </div>
@@ -114,89 +85,121 @@ function Nav() {
 // ── Hero ──────────────────────────────────────────────────────────────────────
 
 function Hero() {
-  const [showDemo, setShowDemo] = useState(false);
+  const [heroEmail, setHeroEmail] = useState("");
+  const [heroWaitlistStatus, setHeroWaitlistStatus] = useState<
+    "idle" | "loading" | "done" | "error"
+  >("idle");
+
+  async function handleHeroWaitlist(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const trimmed = heroEmail.trim();
+    if (!trimmed) return;
+    setHeroWaitlistStatus("loading");
+    try {
+      const res = await fetch("/api/waitlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: trimmed,
+          fullName: "",
+          company: "",
+          companyUrl: "",
+        }),
+      });
+      if (!res.ok) throw new Error();
+      setHeroWaitlistStatus("done");
+      setHeroEmail("");
+    } catch {
+      setHeroWaitlistStatus("error");
+    }
+  }
 
   return (
-    <section className="pt-32 pb-20 px-6">
+    <section className="relative pt-32 pb-0 px-6">
       <div className="max-w-3xl mx-auto text-center">
         {/* Badge */}
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-[#e2e8f0] text-xs font-medium text-[#4b5563] mb-8">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-card border border-border text-xs font-medium text-muted-foreground mb-8">
           <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#2563eb] opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-[#2563eb]"></span>
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
           </span>
           Now in early access
         </div>
 
         {/* Headline */}
-        <h1 className="text-[2.6rem] sm:text-5xl font-semibold tracking-tight text-[#111827] leading-[1.1] mb-5">
+        <h1 className="text-[2.6rem] sm:text-5xl font-semibold tracking-tight text-foreground leading-[1.1] mb-5">
           Know the moment AI touches your code.
         </h1>
 
         {/* Subheadline */}
-        <p className="text-lg text-[#4b5563] max-w-xl mx-auto leading-relaxed mb-9">
+        <p className="text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed mb-8">
           Canary tokens follow your code into any environment. The OS agent monitors file reads at the kernel level. Two layers, zero blind spots.
         </p>
 
-        {/* CTAs */}
-        <div className="flex items-center justify-center">
-          <button
-            onClick={() => setShowDemo(true)}
-            className="relative overflow-hidden inline-flex items-center justify-center px-6 py-2.5 text-sm font-medium text-[#111827] border border-[#e2e8f0] rounded-md bg-white hover:border-[#2563eb] hover:text-[#2563eb] transition-colors"
-          >
-            {/* Scan line */}
-            <span
-              className="pointer-events-none absolute inset-y-0 w-8"
-              style={{
-                background: "linear-gradient(90deg, transparent, rgba(37,99,235,0.25), transparent)",
-                animation: "scan 2.4s ease-in-out infinite",
-              }}
-            />
-            Take a peek
-          </button>
+        {/* CTA card — same shell as bottom waitlist section */}
+        <div className="max-w-lg mx-auto w-full rounded-2xl border border-border bg-card px-8 py-10 shadow-sm text-left">
+          {heroWaitlistStatus === "done" ? (
+            <div className="flex flex-col gap-2.5">
+              <p className="text-center text-sm font-medium text-success">
+                You&apos;re on the list. We&apos;ll be in touch shortly.
+              </p>
+              <a
+                href="https://calendly.com/neudestifanoes/30min"
+                className="inline-flex w-full items-center justify-center rounded-md border border-primary bg-card px-5 py-2.5 text-sm font-semibold text-primary hover:bg-primary/5 transition-colors"
+              >
+                Book a Demo
+              </a>
+            </div>
+          ) : (
+            <>
+              <form onSubmit={handleHeroWaitlist} className="flex flex-col gap-2.5">
+                <input
+                  type="text"
+                  name="email"
+                  inputMode="email"
+                  autoComplete="email"
+                  placeholder={"What's your work email?"}
+                  value={heroEmail}
+                  onChange={(e) => {
+                    setHeroEmail(e.target.value);
+                    if (heroWaitlistStatus === "error") setHeroWaitlistStatus("idle");
+                  }}
+                  className="w-full px-4 py-2.5 text-sm border border-border rounded-md outline-none focus:border-primary focus:ring-1 focus:ring-primary transition placeholder:text-muted-foreground/80"
+                />
+                <button
+                  type="submit"
+                  disabled={heroWaitlistStatus === "loading"}
+                  className="w-full px-5 py-2.5 text-sm font-semibold text-white bg-primary rounded-md hover:bg-[var(--primary-hover)] transition-colors disabled:opacity-60"
+                >
+                  {heroWaitlistStatus === "loading" ? "Joining…" : "Join Waitlist"}
+                </button>
+              </form>
+              <a
+                href="https://calendly.com/neudestifanoes/30min"
+                className="mt-2.5 inline-flex w-full items-center justify-center rounded-md border border-primary bg-card px-5 py-2.5 text-sm font-semibold text-[#2563eb] hover:bg-primary/5 transition-colors"
+              >
+                Book a Demo
+              </a>
+              {heroWaitlistStatus === "error" && (
+                <p className="text-xs text-destructive mt-3 text-center">
+                  Something went wrong. Try again or email founders@tryolev.com
+                </p>
+              )}
+            </>
+          )}
         </div>
       </div>
-      {showDemo && <DemoModal onClose={() => setShowDemo(false)} />}
-    </section>
-  );
-}
 
-// ── Demo Video ────────────────────────────────────────────────────────────────
-
-function DemoVideo() {
-  return (
-    <section className="px-6 pb-24">
-      <div className="max-w-3xl mx-auto">
-        {/* Browser chrome wrapper */}
-        <div className="rounded-xl overflow-hidden border border-[#e2e8f0] shadow-lg bg-white">
-          {/* Chrome bar */}
-          <div className="bg-[#f8fafc] border-b border-[#e2e8f0] px-4 py-2.5 flex items-center gap-3">
-            <div className="flex gap-1.5">
-              <div className="w-3 h-3 rounded-full bg-[#fee2e2]" />
-              <div className="w-3 h-3 rounded-full bg-[#fef9c3]" />
-              <div className="w-3 h-3 rounded-full bg-[#dcfce7]" />
-            </div>
-            <div className="flex-1 bg-white border border-[#e2e8f0] rounded px-3 py-1 text-xs text-[#4b5563] font-mono">
-              olev.com/dashboard
-            </div>
-          </div>
-
-          {/* Video area */}
-          <div className="aspect-video">
-            <iframe
-              className="w-full h-full"
-              src="https://www.youtube.com/embed/37cbDa6ZT3s?rel=0&modestbranding=1"
-              title="OLEV Demo"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            />
-          </div>
-        </div>
-
-        <p className="text-center text-xs text-[#9ca3af] mt-3">
-          Watch live detection fire in under 2 seconds, no editing, no cuts
-        </p>
-      </div>
+      {/* Soft full-width blend from page tint (below CTA) into brand blue — long, gentle stops */}
+      <div
+        aria-hidden
+        className="pointer-events-none relative left-1/2 mt-14 w-screen max-w-none -translate-x-1/2 sm:mt-16"
+        style={{
+          height: "clamp(26rem, 48vh, 38rem)",
+          background:
+            "linear-gradient(180deg, #f0f4ff 0%, #f0f4ff 22%, #ecf0fd 38%, #dfe8fc 52%, #c8d7fa 66%, #9db6f4 78%, #6b93ec 88%, #2563eb 100%)",
+        }}
+      />
     </section>
   );
 }
@@ -207,103 +210,237 @@ const STEPS = [
   {
     num: "01",
     title: "Connect your repos",
-    description:
-      "Install the OLEV GitHub App on your org in one click. Your repos appear in the dashboard instantly, no PAT, no config files, no manual setup.",
     video: "/videos/step-01-github.mp4",
   },
   {
     num: "02",
     title: "Inject canary policies",
-    description:
-      "Select the files you want to monitor. OLEV injects invisible canary lines, single-line additions that don't affect behavior, don't break tests, and are undetectable to normal code review.",
     video: "/videos/step-02-inject.mp4",
   },
   {
     num: "03",
     title: "Deploy the OS watcher",
-    description:
-      "Run one install command from your Settings page. The OLEV agent monitors kernel file-open syscalls in real time, catching AI tools that read your code even without executing it.",
     video: "/videos/step-03-agent.mp4",
   },
   {
     num: "04",
     title: "AI reads your code. Both layers catch it.",
-    description:
-      "The moment an AI tool touches a monitored file, both detection layers fire. The dashboard logs the file accessed, the tool identified, the IP, geo, and whether it's cloud infrastructure or a local machine. Slack gets notified instantly.",
     video: "/videos/step-04-alert.mp4",
   },
 ];
 
-function HowItWorks() {
+function HowItWorksVideo({
+  src,
+  index,
+  videoRefs,
+}: {
+  src: string;
+  index: number;
+  videoRefs: MutableRefObject<(HTMLVideoElement | null)[]>;
+}) {
+  const [missing, setMissing] = useState(false);
+
+  if (missing) {
+    return (
+      <div className="flex aspect-video min-h-[12rem] w-full flex-col items-center justify-center gap-2 rounded-lg border border-white/25 bg-[#1e3a8a]/40 px-4 text-center text-sm text-blue-100">
+        <span className="font-medium text-white">Step video</span>
+        <span className="max-w-sm text-xs text-blue-200/90 leading-relaxed">
+          This loop isn&apos;t on the server yet. Place the MP4 at{" "}
+          <code className="rounded bg-black/20 px-1 py-0.5 font-mono text-[11px] text-blue-100">
+            public{src}
+          </code>{" "}
+          and refresh.
+        </span>
+      </div>
+    );
+  }
+
   return (
-    <section id="how-it-works" className="px-6 pb-28">
-      <div className="max-w-5xl mx-auto">
-        <div className="mb-14 text-center">
-          <h2 className="text-2xl font-semibold text-[#111827] tracking-tight">How it works</h2>
-          <p className="text-[#4b5563] mt-2 text-sm">Four steps. No new infrastructure.</p>
-        </div>
+    <video
+      ref={(el) => {
+        videoRefs.current[index] = el;
+      }}
+      className="h-full w-full object-cover"
+      loop
+      muted
+      playsInline
+      preload="metadata"
+      src={src}
+      onError={() => setMissing(true)}
+    />
+  );
+}
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          {STEPS.map((step) => (
-            <div key={step.num} className="bg-white rounded-xl border border-[#e2e8f0] overflow-hidden">
-              {/* Video placeholder */}
-              <div className="relative bg-[#f0f4ff] aspect-video flex items-center justify-center">
-                <video
-                  className="w-full h-full object-cover"
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  src={step.video}
-                  // poster is shown when video src isn't available yet
-                />
-              </div>
+function HowItWorks() {
+  const targetRef = useRef<HTMLDivElement>(null);
+  const viewportRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const firstItemRef = useRef<HTMLDivElement>(null);
+  const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
+  const [activeStep, setActiveStep] = useState(0);
+  const [maxShiftPx, setMaxShiftPx] = useState(0);
+  const [sidePadPx, setSidePadPx] = useState(0);
+  const { scrollYProgress } = useScroll({
+    target: targetRef,
+    offset: ["start start", "end end"],
+  });
 
-              {/* Text */}
-              <div className="p-5">
-                <div className="text-xs font-mono text-[#2563eb] mb-1.5">Step {step.num}</div>
-                <h3 className="text-[15px] font-semibold text-[#111827] mb-2">{step.title}</h3>
-                <p className="text-sm text-[#4b5563] leading-relaxed">{step.description}</p>
-              </div>
-            </div>
-          ))}
+  // Multiply progress by measured distance; state in closure updates when layout is measured (ResizeObserver / delayed remeasure).
+  const x = useTransform(scrollYProgress, (p) => -p * maxShiftPx);
+
+  useLayoutEffect(() => {
+    const track = trackRef.current;
+    const viewport = viewportRef.current;
+    if (!track || !viewport) return;
+
+    const measure = () => {
+      requestAnimationFrame(() => {
+        const vw = viewport.clientWidth;
+        const first = firstItemRef.current;
+        const itemW = first ? first.getBoundingClientRect().width : 0;
+        const pad = itemW > 0 ? Math.max(0, (vw - itemW) / 2) : 0;
+        setSidePadPx(pad);
+
+        // Re-read after padding state would apply — measure track after layout; use double rAF for post-paint scrollWidth
+        requestAnimationFrame(() => {
+          const sw = track.scrollWidth;
+          const next = Math.max(0, sw - vw);
+          setMaxShiftPx(next);
+        });
+      });
+    };
+
+    measure();
+    const roTrack = new ResizeObserver(measure);
+    const roVp = new ResizeObserver(measure);
+    roTrack.observe(track);
+    roVp.observe(viewport);
+    window.addEventListener("resize", measure, { passive: true });
+
+    const t = window.setTimeout(measure, 100);
+    const t2 = window.setTimeout(measure, 500);
+
+    return () => {
+      roTrack.disconnect();
+      roVp.disconnect();
+      window.removeEventListener("resize", measure);
+      window.clearTimeout(t);
+      window.clearTimeout(t2);
+    };
+  }, []);
+  useMotionValueEvent(scrollYProgress, "change", (value) => {
+    const idx = Math.min(STEPS.length - 1, Math.floor(value * STEPS.length));
+    setActiveStep((prev) => (prev === idx ? prev : idx));
+  });
+
+  useEffect(() => {
+    videoRefs.current.forEach((video, idx) => {
+      if (!video) return;
+      if (idx === activeStep) {
+        const playPromise = video.play();
+        if (playPromise && typeof playPromise.catch === "function") {
+          playPromise.catch(() => {});
+        }
+      } else {
+        video.pause();
+      }
+    });
+  }, [activeStep]);
+
+  return (
+    <section id="how-it-works">
+      {/* Scroll track (tall) + sticky window + motion horizontal track */}
+      <div
+        ref={targetRef}
+        className="relative w-full bg-primary"
+        style={{ height: `${(STEPS.length + 0.8) * 100}vh` }}
+      >
+        <div
+          ref={viewportRef}
+          className="sticky top-0 self-start flex h-svh w-full flex-col justify-center overflow-hidden bg-primary pt-20 sm:pt-24 md:pt-28"
+        >
+          <motion.div
+            ref={trackRef}
+            style={{
+              x,
+              display: "flex",
+              gap: "100px",
+              paddingLeft: sidePadPx,
+              paddingRight: sidePadPx,
+            }}
+            className="h-full w-max will-change-transform"
+          >
+            {STEPS.map((step) => {
+              const caption = `Step ${step.num}: ${step.title}${step.title.endsWith(".") ? "" : "."}`;
+              return (
+                <div
+                  key={step.num}
+                  ref={step.num === "01" ? firstItemRef : undefined}
+                  className="shrink-0 px-2 py-2 sm:px-3 sm:py-3"
+                >
+                  <div className="w-full max-w-[min(86vw,42rem)] md:max-w-[min(84vw,46rem)] lg:max-w-[min(82vw,50rem)]">
+                    <p className="mb-1 text-left text-base font-semibold leading-snug tracking-tight text-white sm:mb-1 sm:text-lg md:text-xl">
+                      {caption}
+                    </p>
+                    <div className="relative aspect-video min-h-[12rem] w-full overflow-hidden rounded-lg shadow-md shadow-black/20 ring-1 ring-white/15">
+                      <HowItWorksVideo
+                        src={step.video}
+                        index={Number(step.num) - 1}
+                        videoRefs={videoRefs}
+                      />
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </motion.div>
         </div>
+      </div>
+
+      {/* Blue → page tint (matches hero fade, reversed) */}
+      <div className="bg-[#f0f4ff] pb-28">
+        <div
+          aria-hidden
+          className="pointer-events-none relative left-1/2 w-screen max-w-none -translate-x-1/2"
+          style={{
+            height: "clamp(22rem, 42vh, 34rem)",
+            background:
+              "linear-gradient(180deg, #2563eb 0%, #5b8def 16%, #8eb1f4 36%, #c5d8f8 58%, #e8eefc 82%, #f0f4ff 100%)",
+          }}
+        />
       </div>
     </section>
   );
 }
 
-// ── Live Alert Feed ───────────────────────────────────────────────────────────
+// ── Interactive demo (inline) ────────────────────────────────────────────────
 
-
-function AlertFeed() {
+function InteractiveDemoSection() {
   return (
-    <section className="px-6 pb-28">
-      <div className="max-w-4xl mx-auto">
-        <div className="mb-10 text-center">
-          <h2 className="text-2xl font-semibold text-[#111827] tracking-tight">What alerts look like</h2>
-          <p className="text-[#4b5563] mt-2 text-sm">Plain English. Every alert tells you who, what, where, and how risky.</p>
+    <section id="try-demo" className="px-6 pb-28">
+      <div className="max-w-5xl mx-auto">
+        <div className="mb-2 text-center">
+          <h2 className="text-2xl font-semibold text-foreground tracking-tight">
+            Try Mini Demo          </h2>
+
         </div>
 
-        {/* Screenshot composite — list view with detail panel overlapping */}
-        <div className="relative">
-          {/* Main: alerts list */}
-          <div className="rounded-xl overflow-hidden border border-[#e2e8f0] shadow-md">
-            <img
-              src="/alerts-list.png"
-              alt="OLEV alerts dashboard"
-              className="w-full block"
-            />
+        <div className="flex h-[min(72vh,760px)] min-h-[420px] max-h-[880px] flex-col overflow-hidden rounded-xl border border-border bg-card shadow-lg">
+          <div className="flex flex-shrink-0 items-center gap-3 border-b border-border bg-muted px-4 py-2.5">
+            <div className="flex gap-1.5">
+              <div className="h-3 w-3 rounded-full bg-[#fee2e2]" />
+              <div className="h-3 w-3 rounded-full bg-[#fef9c3]" />
+              <div className="h-3 w-3 rounded-full bg-[#dcfce7]" />
+            </div>
+            <div className="flex-1 rounded border border-border bg-card px-3 py-1 font-mono text-xs text-muted-foreground">
+              app.olev.io/demo
+            </div>
           </div>
-
-          {/* Overlay: expanded alert detail panel — matches height of list */}
-          <div className="absolute top-0 right-4 sm:right-8 h-full rounded-xl overflow-hidden border border-[#e2e8f0] shadow-2xl">
-            <img
-              src="/alert-detail.png"
-              alt="OLEV alert detail"
-              className="h-full w-auto block"
-            />
-          </div>
+          <iframe
+            src="https://olev-wheat.vercel.app/demo"
+            title="OLEV live demo"
+            className="min-h-0 w-full flex-1 border-0 bg-card"
+          />
         </div>
       </div>
     </section>
@@ -350,20 +487,20 @@ function Features() {
     <section id="features" className="px-6 pb-28">
       <div className="max-w-5xl mx-auto">
         <div className="mb-12 text-center">
-          <h2 className="text-2xl font-semibold text-[#111827] tracking-tight">What you get</h2>
+          <h2 className="text-2xl font-semibold text-foreground tracking-tight">What you get</h2>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {FEATURES.map((f) => (
-            <div key={f.title} className="bg-white rounded-xl border border-[#e2e8f0] p-5">
-              <div className="w-8 h-8 bg-[#eff6ff] rounded-md flex items-center justify-center mb-3">
+            <div key={f.title} className="bg-card rounded-xl border border-border p-5">
+              <div className="w-8 h-8 bg-accent rounded-md flex items-center justify-center mb-3">
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
                   <circle cx="8" cy="8" r="3" fill="#2563eb" />
                   <circle cx="8" cy="8" r="6" stroke="#2563eb" strokeWidth="1.5" />
                 </svg>
               </div>
-              <h3 className="text-[14px] font-semibold text-[#111827] mb-1.5">{f.title}</h3>
-              <p className="text-sm text-[#4b5563] leading-relaxed">{f.description}</p>
+              <h3 className="text-[14px] font-semibold text-foreground mb-1.5">{f.title}</h3>
+              <p className="text-sm text-muted-foreground leading-relaxed">{f.description}</p>
             </div>
           ))}
         </div>
@@ -404,15 +541,15 @@ function FAQ() {
     <section id="faq" className="px-6 pb-28">
       <div className="max-w-2xl mx-auto">
         <div className="mb-10 text-center">
-          <h2 className="text-2xl font-semibold text-[#111827] tracking-tight">Frequently asked</h2>
+          <h2 className="text-2xl font-semibold text-foreground tracking-tight">Frequently asked</h2>
         </div>
 
         <div className="space-y-2">
           {FAQ_ITEMS.map((item, i) => (
-            <div key={i} className="bg-white rounded-xl border border-[#e2e8f0] overflow-hidden">
+            <div key={i} className="bg-card rounded-xl border border-border overflow-hidden">
               <button
                 onClick={() => setOpen(open === i ? null : i)}
-                className="w-full text-left px-5 py-4 flex items-center justify-between gap-4 text-sm font-medium text-[#111827] hover:bg-[#f8fafc] transition-colors"
+                className="w-full text-left px-5 py-4 flex items-center justify-between gap-4 text-sm font-medium text-foreground hover:bg-muted transition-colors"
               >
                 {item.q}
                 <svg
@@ -428,7 +565,7 @@ function FAQ() {
                 </svg>
               </button>
               {open === i && (
-                <div className="px-5 pb-4 text-sm text-[#4b5563] leading-relaxed border-t border-[#f1f5f9]">
+                <div className="px-5 pb-4 text-sm text-muted-foreground leading-relaxed border-t border-muted">
                   <div className="pt-3">{item.a}</div>
                 </div>
               )}
@@ -468,11 +605,11 @@ function Waitlist() {
 
   return (
     <section id="waitlist" className="px-6 pb-28">
-      <div className="max-w-lg mx-auto bg-white rounded-2xl border border-[#e2e8f0] px-8 py-10 text-center shadow-sm">
-        <h2 className="text-2xl font-semibold text-[#111827] tracking-tight mb-2">
+      <div className="max-w-lg mx-auto bg-card rounded-2xl border border-border px-8 py-10 text-center shadow-sm">
+        <h2 className="text-2xl font-semibold text-foreground tracking-tight mb-2">
           Get early access to OLEV
         </h2>
-        <p className="text-sm text-[#4b5563] leading-relaxed mb-8">
+        <p className="text-sm text-muted-foreground leading-relaxed mb-8">
           We&apos;re onboarding a small pilot cohort. Join the waitlist or book a demo with the founders.
         </p>
 
@@ -487,7 +624,7 @@ function Waitlist() {
               placeholder="Full name"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
-              className="w-full px-4 py-2.5 text-sm border border-[#e2e8f0] rounded-md outline-none focus:border-[#2563eb] focus:ring-1 focus:ring-[#2563eb] transition"
+              className="w-full px-4 py-2.5 text-sm border border-border rounded-md outline-none focus:border-primary focus:ring-1 focus:ring-primary transition"
             />
             <input
               type="email"
@@ -495,26 +632,26 @@ function Waitlist() {
               placeholder="you@company.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-2.5 text-sm border border-[#e2e8f0] rounded-md outline-none focus:border-[#2563eb] focus:ring-1 focus:ring-[#2563eb] transition"
+              className="w-full px-4 py-2.5 text-sm border border-border rounded-md outline-none focus:border-primary focus:ring-1 focus:ring-primary transition"
             />
             <input
               type="text"
               placeholder="Company name (optional)"
               value={company}
               onChange={(e) => setCompany(e.target.value)}
-              className="w-full px-4 py-2.5 text-sm border border-[#e2e8f0] rounded-md outline-none focus:border-[#2563eb] focus:ring-1 focus:ring-[#2563eb] transition"
+              className="w-full px-4 py-2.5 text-sm border border-border rounded-md outline-none focus:border-primary focus:ring-1 focus:ring-primary transition"
             />
             <input
               type="text"
               placeholder="Company website (optional)"
               value={companyUrl}
               onChange={(e) => setCompanyUrl(e.target.value)}
-              className="w-full px-4 py-2.5 text-sm border border-[#e2e8f0] rounded-md outline-none focus:border-[#2563eb] focus:ring-1 focus:ring-[#2563eb] transition"
+              className="w-full px-4 py-2.5 text-sm border border-border rounded-md outline-none focus:border-primary focus:ring-1 focus:ring-primary transition"
             />
             <button
               type="submit"
               disabled={status === "loading"}
-              className="w-full px-5 py-2.5 text-sm font-semibold text-white bg-[#2563eb] rounded-md hover:bg-[#1d4ed8] transition-colors disabled:opacity-60"
+              className="w-full px-5 py-2.5 text-sm font-semibold text-white bg-primary rounded-md hover:bg-[var(--primary-hover)] transition-colors disabled:opacity-60"
             >
               {status === "loading" ? "Joining..." : "Join waitlist"}
             </button>
@@ -522,13 +659,13 @@ function Waitlist() {
         )}
 
         {status === "error" && (
-          <p className="text-xs text-[#dc2626] mb-4">Something went wrong. Email us at founders@tryolev.com</p>
+          <p className="text-xs text-destructive mb-4">Something went wrong. Email us at founders@tryolev.com</p>
         )}
 
-        <div className="flex items-center gap-3 text-xs text-[#9ca3af] mb-6">
-          <div className="flex-1 h-px bg-[#e2e8f0]" />
+        <div className="flex items-center gap-3 text-xs text-muted-foreground/70 mb-6">
+          <div className="flex-1 h-px bg-border" />
           or
-          <div className="flex-1 h-px bg-[#e2e8f0]" />
+          <div className="flex-1 h-px bg-border" />
         </div>
 
         <a
@@ -549,16 +686,16 @@ function Waitlist() {
 
 function Footer() {
   return (
-    <footer className="border-t border-[#e2e8f0] px-6 py-6 bg-white">
-      <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-[#4b5563]">
+    <footer className="border-t border-border bg-card">
+      <div className="max-w-5xl mx-auto px-6 py-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
         <div className="flex items-center gap-2">
           <img src="/olevlogo.png" alt="OLEV" className="h-6 w-auto" />
-          <span className="text-[#9ca3af]">© 2026</span>
+          <span className="text-muted-foreground/70">© 2026</span>
         </div>
         <div className="flex items-center gap-5">
-          <a href="/privacy" className="hover:text-[#111827] transition-colors">Privacy</a>
-          <a href="/terms" className="hover:text-[#111827] transition-colors">Terms</a>
-          <a href="mailto:founders@tryolev.com" className="hover:text-[#111827] transition-colors">founders@tryolev.com</a>
+          <a href="/privacy" className="hover:text-foreground transition-colors">Privacy</a>
+          <a href="/terms" className="hover:text-foreground transition-colors">Terms</a>
+          <a href="mailto:founders@tryolev.com" className="hover:text-foreground transition-colors">founders@tryolev.com</a>
         </div>
       </div>
     </footer>
@@ -573,7 +710,7 @@ export default function Home() {
       <Nav />
       <main>
         <div className="relative">
-          {/* Grid background — fades out by bottom of demo video */}
+          {/* Grid background — fades out below hero */}
           <div
             className="absolute inset-0 pointer-events-none -z-10"
             style={{
@@ -585,10 +722,9 @@ export default function Home() {
             }}
           />
           <Hero />
-          <DemoVideo />
         </div>
         <HowItWorks />
-        <AlertFeed />
+        <InteractiveDemoSection />
         <Features />
         <FAQ />
         <Waitlist />
