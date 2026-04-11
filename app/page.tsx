@@ -1,7 +1,13 @@
 "use client";
 
 import { useState, useEffect, useLayoutEffect, useRef, type MutableRefObject } from "react";
-import { motion, useMotionValueEvent, useScroll, useTransform } from "framer-motion";
+import {
+  motion,
+  useMotionValueEvent,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+} from "framer-motion";
 
 // ── Nav ───────────────────────────────────────────────────────────────────────
 
@@ -84,6 +90,36 @@ function Nav() {
 
 // ── Hero ──────────────────────────────────────────────────────────────────────
 
+/** Typing reveal for the tail of the headline — setTimeout-per-char (no extra deps). */
+function HeroTypedSuffix({ text, charDelayMs = 55 }: { text: string; charDelayMs?: number }) {
+  const reduceMotion = useReducedMotion();
+  const [len, setLen] = useState(0);
+
+  useEffect(() => {
+    if (reduceMotion) {
+      setLen(text.length);
+      return;
+    }
+    if (len >= text.length) return;
+    const id = window.setTimeout(() => setLen((n) => n + 1), charDelayMs);
+    return () => window.clearTimeout(id);
+  }, [len, text, charDelayMs, reduceMotion]);
+
+  const typing = len < text.length;
+
+  return (
+    <span className="text-primary">
+      {text.slice(0, len)}
+      {typing && (
+        <span
+          className="ml-0.5 inline-block h-[0.92em] w-[2px] translate-y-[0.06em] bg-primary align-middle opacity-90 motion-reduce:animate-none animate-pulse"
+          aria-hidden
+        />
+      )}
+    </span>
+  );
+}
+
 function Hero() {
   const [heroEmail, setHeroEmail] = useState("");
   const [heroWaitlistStatus, setHeroWaitlistStatus] = useState<
@@ -115,7 +151,7 @@ function Hero() {
   }
 
   return (
-    <section className="relative pt-32 pb-0 px-6">
+    <section className="relative px-6 pt-32 pb-16 sm:pb-20">
       <div className="max-w-3xl mx-auto text-center">
         {/* Badge */}
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-card border border-border text-xs font-medium text-muted-foreground mb-8">
@@ -126,62 +162,69 @@ function Hero() {
           Now in early access
         </div>
 
-        {/* Headline */}
-        <h1 className="text-[2.6rem] sm:text-5xl font-semibold tracking-tight text-foreground leading-[1.1] mb-5">
-          Know the moment AI touches your code.
+        {/* Headline — typed suffix; full string in aria-label for SR / SEO */}
+        <h1
+          className="text-[2.6rem] sm:text-5xl font-semibold tracking-tight text-foreground leading-[1.1] mb-5"
+          aria-label="AI is reading your code. Know exactly when."
+        >
+          <span className="block">AI is reading your code.</span>
+          <span className="mt-1 block sm:mt-2">
+            <HeroTypedSuffix text="Know exactly when." />
+          </span>
         </h1>
 
         {/* Subheadline */}
         <p className="text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed mb-8">
-          Canary tokens follow your code into any environment. The OS agent monitors file reads at the kernel level. Two layers, zero blind spots.
+        Multiple-layer monitoring to catch unapproved LLMs interacting with your codebase in real-time.
         </p>
 
-        {/* CTA card — same shell as bottom waitlist section */}
-        <div className="max-w-lg mx-auto w-full rounded-2xl border border-border bg-card px-8 py-10 shadow-sm text-left">
+        <div className="mx-auto w-full max-w-lg">
           {heroWaitlistStatus === "done" ? (
-            <div className="flex flex-col gap-2.5">
-              <p className="text-center text-sm font-medium text-success">
+            <div className="flex flex-col gap-3">
+              <p className="text-sm font-medium text-success">
                 You&apos;re on the list. We&apos;ll be in touch shortly.
               </p>
               <a
                 href="https://calendly.com/neudestifanoes/30min"
-                className="inline-flex w-full items-center justify-center rounded-md border border-primary bg-card px-5 py-2.5 text-sm font-semibold text-primary hover:bg-primary/5 transition-colors"
+                className="inline-flex w-full items-center justify-center rounded-md border border-primary px-5 py-2.5 text-sm font-semibold text-primary hover:bg-primary/5 transition-colors"
               >
-                Book a Demo
+                Book a 15-min Demo
               </a>
             </div>
           ) : (
             <>
-              <form onSubmit={handleHeroWaitlist} className="flex flex-col gap-2.5">
-                <input
-                  type="text"
-                  name="email"
-                  inputMode="email"
-                  autoComplete="email"
-                  placeholder={"What's your work email?"}
-                  value={heroEmail}
-                  onChange={(e) => {
-                    setHeroEmail(e.target.value);
-                    if (heroWaitlistStatus === "error") setHeroWaitlistStatus("idle");
-                  }}
-                  className="w-full px-4 py-2.5 text-sm border border-border rounded-md outline-none focus:border-primary focus:ring-1 focus:ring-primary transition placeholder:text-muted-foreground/80"
-                />
-                <button
-                  type="submit"
-                  disabled={heroWaitlistStatus === "loading"}
-                  className="w-full px-5 py-2.5 text-sm font-semibold text-white bg-primary rounded-md hover:bg-[var(--primary-hover)] transition-colors disabled:opacity-60"
-                >
-                  {heroWaitlistStatus === "loading" ? "Joining…" : "Join Waitlist"}
-                </button>
+              <form onSubmit={handleHeroWaitlist} className="flex flex-col gap-0">
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-stretch sm:gap-2">
+                  <input
+                    type="text"
+                    name="email"
+                    inputMode="email"
+                    autoComplete="email"
+                    placeholder={"What's your work email?"}
+                    value={heroEmail}
+                    onChange={(e) => {
+                      setHeroEmail(e.target.value);
+                      if (heroWaitlistStatus === "error") setHeroWaitlistStatus("idle");
+                    }}
+                    className="min-h-[42px] min-w-0 flex-1 px-4 py-2.5 text-sm border border-border rounded-md bg-card outline-none focus:border-primary focus:ring-1 focus:ring-primary transition placeholder:text-muted-foreground/80"
+                  />
+                  <button
+                    type="submit"
+                    disabled={heroWaitlistStatus === "loading"}
+                    className="shrink-0 px-5 py-2.5 text-sm font-semibold text-primary-foreground bg-primary rounded-md hover:bg-[var(--primary-hover)] transition-colors disabled:opacity-60 sm:w-auto w-full"
+                  >
+                    {heroWaitlistStatus === "loading" ? "Joining…" : "Join Waitlist"}
+                  </button>
+                </div>
               </form>
               <a
                 href="https://calendly.com/neudestifanoes/30min"
-                className="mt-2.5 inline-flex w-full items-center justify-center rounded-md border border-primary bg-card px-5 py-2.5 text-sm font-semibold text-[#2563eb] hover:bg-primary/5 transition-colors"
+                className="mt-2.5 inline-flex w-full items-center justify-center rounded-md border border-primary px-5 py-2.5 text-sm font-semibold text-primary hover:bg-primary/5 transition-colors"
               >
-                Book a Demo
+                Book a 15-min Demo
               </a>
               {heroWaitlistStatus === "error" && (
-                <p className="text-xs text-destructive mt-3 text-center">
+                <p className="text-xs text-destructive mt-3">
                   Something went wrong. Try again or email founders@tryolev.com
                 </p>
               )}
@@ -189,15 +232,139 @@ function Hero() {
           )}
         </div>
       </div>
+    </section>
+  );
+}
 
-      {/* Soft full-width blend from page tint (below CTA) into brand blue — long, gentle stops */}
+// ── Product showcase (zig-zag, above How it works) ────────────────────────────
+
+const PRODUCT_SHOWCASE = [
+  {
+    kicker: "Coverage",
+    headline: "Surgical deployment in seconds.",
+    body: 'Sync your GitHub and browse your live file tree. With one click, deploy OS agents and honeytokens to instantly protect your "Crown Jewels" (auth, billing, secrets).',
+    imageSrc: "/showcase/coverage.png",
+    imageAlt: "OLEV coverage view: file tree with canary and agent status",
+    placeholderHint: "File tree with lightning (canary), eye (agent), and live badges",
+    fileName: "coverage.png",
+  },
+  {
+    kicker: "Alerts",
+    headline: "High-fidelity alerts, instant context.",
+    body: "Cut through the noise. Get the full story the exact second unapproved AI touches your code, complete with actor IP, raw JSON, and one-click Jira exports.",
+    imageSrc: "/showcase/alerts.png",
+    imageAlt: "OLEV alerts table with detail panel and actor data",
+    placeholderHint: "Alerts table, slide-out with IP / actor / JSON",
+    fileName: "alerts.png",
+  },
+  {
+    kicker: "Directory",
+    headline: "Map Shadow AI to real humans.",
+    body: "Stop guessing who owns rogue devices. Automatically track which AI tools are running on every machine, and link unidentified network activity directly back to your team.",
+    imageSrc: "/showcase/directory.png",
+    imageAlt: "OLEV directory: people vs devices and AI tool labels",
+    placeholderHint: "Assigned People vs Unidentified Devices, AI tool pills",
+    fileName: "directory.png",
+  },
+] as const;
+
+function ShowcaseMedia({
+  src,
+  alt,
+  placeholderHint,
+  fileName,
+  imageAlign,
+}: {
+  src: string;
+  alt: string;
+  placeholderHint: string;
+  fileName: string;
+  /** Zig-zag: nudge screenshot toward the copy column (inner edge). */
+  imageAlign: "inner-start" | "inner-end";
+}) {
+  const [failed, setFailed] = useState(false);
+
+  const rowJustify =
+    imageAlign === "inner-start"
+      ? "justify-center md:justify-start"
+      : "justify-center md:justify-end";
+
+  return (
+    <div className={`flex w-full ${rowJustify}`}>
+      <div className="relative w-max max-w-full overflow-hidden rounded-xl border border-border bg-card shadow-sm ring-1 ring-border/50">
+        {!failed ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={src}
+            alt={alt}
+            className="block h-auto max-h-none w-auto max-w-full"
+            onError={() => setFailed(true)}
+          />
+        ) : (
+          <div className="flex min-h-[14rem] w-full min-w-[min(100%,20rem)] max-w-full flex-col items-center justify-center gap-3 bg-muted/40 px-6 py-12 text-center sm:min-h-[16rem]">
+            <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              Placeholder
+            </span>
+            <p className="max-w-md text-sm leading-relaxed text-muted-foreground sm:text-base">{placeholderHint}</p>
+            <code className="rounded-md border border-border bg-card px-2.5 py-1 font-mono text-[11px] text-muted-foreground">
+              public/showcase/{fileName}
+            </code>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function ProductShowcase() {
+  return (
+    <section className="border-t border-border bg-background px-6 pt-20 sm:pt-28" aria-labelledby="product-showcase-heading">
+      <div className="mx-auto max-w-7xl pb-12 sm:pb-16">
+        <h2 id="product-showcase-heading" className="mb-3 text-center text-base font-semibold uppercase tracking-wide text-primary sm:text-lg">
+          Platform
+        </h2>
+        <p className="mx-auto mb-16 max-w-3xl text-center text-3xl font-semibold tracking-tight text-foreground sm:mb-20 sm:text-4xl">
+          Total visibility, real-time response, human-level control.
+        </p>
+
+        <div className="flex flex-col gap-20 sm:gap-28">
+          {PRODUCT_SHOWCASE.map((block, i) => {
+            const reverse = i % 2 === 1;
+            return (
+              <div
+                key={block.kicker}
+                className={`flex flex-col items-center gap-10 md:gap-16 lg:gap-20 ${reverse ? "md:flex-row-reverse" : "md:flex-row"}`}
+              >
+                <div className="w-full min-w-0 shrink-0 md:max-w-md lg:max-w-lg xl:max-w-xl">
+                  <p className="mb-3 text-base font-semibold text-primary sm:text-lg">{block.kicker}</p>
+                  <h3 className="mb-5 text-2xl font-semibold tracking-tight text-foreground sm:text-3xl lg:text-4xl">
+                    {block.headline}
+                  </h3>
+                  <p className="text-lg leading-relaxed text-muted-foreground sm:text-xl">{block.body}</p>
+                </div>
+                <div className="w-full min-w-0 flex-1 md:max-w-none">
+                  <ShowcaseMedia
+                    src={block.imageSrc}
+                    alt={block.imageAlt}
+                    placeholderHint={block.placeholderHint}
+                    fileName={block.fileName}
+                    imageAlign={reverse ? "inner-end" : "inner-start"}
+                  />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Full-bleed blend from page background into brand blue — meets horizontal scroll (How it works) */}
       <div
         aria-hidden
-        className="pointer-events-none relative left-1/2 mt-14 w-screen max-w-none -translate-x-1/2 sm:mt-16"
+        className="pointer-events-none relative left-1/2 w-screen max-w-none -translate-x-1/2"
         style={{
-          height: "clamp(26rem, 48vh, 38rem)",
+          height: "clamp(22rem, 42vh, 34rem)",
           background:
-            "linear-gradient(180deg, #f0f4ff 0%, #f0f4ff 22%, #ecf0fd 38%, #dfe8fc 52%, #c8d7fa 66%, #9db6f4 78%, #6b93ec 88%, #2563eb 100%)",
+            "linear-gradient(180deg, var(--background) 0%, var(--background) 22%, #ecf0fd 38%, #dfe8fc 52%, #c8d7fa 66%, #9db6f4 78%, #6b93ec 88%, var(--primary) 100%)",
         }}
       />
     </section>
@@ -723,6 +890,7 @@ export default function Home() {
           />
           <Hero />
         </div>
+        <ProductShowcase />
         <HowItWorks />
         <InteractiveDemoSection />
         <Features />
