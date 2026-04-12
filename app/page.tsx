@@ -360,7 +360,7 @@ function ProductShowcase() {
       {/* Full-bleed blend from page background into brand blue — meets horizontal scroll (How it works) */}
       <div
         aria-hidden
-        className="pointer-events-none relative left-1/2 w-screen max-w-none -translate-x-1/2"
+        className="pointer-events-none relative left-1/2 hidden w-screen max-w-none -translate-x-1/2 sm:block"
         style={{
           height: "clamp(22rem, 42vh, 34rem)",
           background:
@@ -515,7 +515,7 @@ function HowItWorks() {
   }, [activeStep]);
 
   return (
-    <section id="how-it-works">
+    <section id="how-it-works" className="hidden sm:block">
       {/* Scroll track (tall) + sticky window + motion horizontal track */}
       <div
         ref={targetRef}
