@@ -584,7 +584,7 @@ function HowItWorks() {
 
 function InteractiveDemoSection() {
   return (
-    <section id="try-demo" className="px-6 pb-28">
+    <section id="try-demo" className="hidden px-6 pb-28 sm:block">
       <div className="max-w-5xl mx-auto">
         <div className="mb-2 text-center">
           <h2 className="text-2xl font-semibold text-foreground tracking-tight">
