@@ -980,8 +980,7 @@ function ProductShowcase() {
                       The piece of paper that wins the deal.
                     </h2>
                     <p className="text-base leading-relaxed text-muted-foreground sm:text-xl">
-                      OLEV translates raw local AI telemetry into a client-facing compliance report. Slide this across the
-                      table during your next RFP to instantly end the security debate.
+                    OLEV translates raw local AI telemetry into a client-facing compliance report. Promise it in the pitch. Deliver it when the job is done. No other agency can offer that.
                     </p>
                   </div>
                   <div className="w-full min-w-0 flex-1 md:max-w-none">
