@@ -951,7 +951,7 @@ function ProductShowcase() {
           Platform
         </h2>
         <p className="mx-auto mb-20 max-w-3xl text-center text-2xl font-semibold tracking-tight text-foreground sm:mb-35 sm:text-4xl">
-          Turn AI transperency as a billable asset.
+          Turn AI transparency as a billable asset.
         </p>
 
         <div className="flex flex-col gap-28 sm:gap-42">
