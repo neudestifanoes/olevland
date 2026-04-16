@@ -19,7 +19,7 @@ const fontBody = Manrope({
 export const metadata: Metadata = {
   title: "OLEV",
   description:
-    "AI is reading your code. Know exactly when.",
+    "Prove Your Code is Secure. Win Bigger Enterprise Contracts",
   // Tab icon: app/icon.png, app/favicon.ico, app/apple-icon.png (see npm run icons)
   openGraph: {
     title: "OLEV — Know the moment AI touches your code.",

@@ -57,11 +57,18 @@
 }
 
 @layer base {
+  /*
+   * Motion useScroll measures scroll offsets against the scroll container.
+   * Root defaults to static; non-static avoids console warning and keeps
+   * offset math stable (see motiondivision/motion#2880).
+   */
   html {
     scroll-behavior: smooth;
+    position: relative;
   }
 
   body {
+    position: relative;
     @apply bg-background text-foreground antialiased;
     font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
     font-weight: var(--weight-regular);
