@@ -149,7 +149,7 @@ function Hero() {
 
         {/* Headline — typed suffix; full string in aria-label for SR / SEO */}
         <h1
-          className="text-[2.6rem] sm:text-5xl font-semibold tracking-tight text-foreground leading-[1.1] mb-5"
+          className="text-[2.1rem] sm:text-5xl font-semibold tracking-tight text-foreground leading-[1.1] mb-5"
           aria-label="Prove Your Code is Secure. Win Bigger Enterprise Contracts."
         >
           <span className="block">Prove Your Code is Secure.</span>
@@ -950,8 +950,8 @@ function ProductShowcase() {
         <h2 id="product-showcase-heading" className="mb-3 text-center text-base font-semibold uppercase tracking-wide text-primary sm:text-lg">
           Platform
         </h2>
-        <p className="mx-auto mb-20 max-w-3xl text-center text-3xl font-semibold tracking-tight text-foreground sm:mb-35 sm:text-4xl">
-          Turn AI transperency as a billable asset.
+        <p className="mx-auto mb-20 max-w-3xl text-center text-2xl font-semibold tracking-tight text-foreground sm:mb-35 sm:text-4xl">
+          Turn AI transparency as a billable asset.
         </p>
 
         <div className="flex flex-col gap-28 sm:gap-42">
@@ -975,11 +975,11 @@ function ProductShowcase() {
                     <p className="mb-3 text-base font-semibold text-primary sm:text-lg">The Artifact</p>
                     <h2
                       id="artifact-heading"
-                      className="mb-5 text-2xl font-semibold tracking-tight text-foreground sm:text-3xl lg:text-4xl"
+                      className="mb-5 text-xl font-semibold tracking-tight text-foreground sm:text-3xl lg:text-4xl"
                     >
                       The piece of paper that wins the deal.
                     </h2>
-                    <p className="text-lg leading-relaxed text-muted-foreground sm:text-xl">
+                    <p className="text-base leading-relaxed text-muted-foreground sm:text-xl">
                       OLEV translates raw local AI telemetry into a client-facing compliance report. Slide this across the
                       table during your next RFP to instantly end the security debate.
                     </p>
@@ -996,10 +996,10 @@ function ProductShowcase() {
               <div key={row.key} className={rowClass}>
                 <div className="w-full min-w-0 shrink-0 md:max-w-md lg:max-w-lg xl:max-w-xl">
                   <p className="mb-3 text-base font-semibold text-primary sm:text-lg">{block.kicker}</p>
-                  <h3 className="mb-5 text-2xl font-semibold tracking-tight text-foreground sm:text-3xl lg:text-4xl">
+                  <h3 className="mb-5 text-xl font-semibold tracking-tight text-foreground sm:text-3xl lg:text-4xl">
                     {block.headline}
                   </h3>
-                  <p className="text-lg leading-relaxed text-muted-foreground sm:text-xl">{block.body}</p>
+                  <p className="text-base leading-relaxed text-muted-foreground sm:text-xl">{block.body}</p>
                 </div>
                 <div className="w-full min-w-0 flex-1 md:max-w-none">
                   <ProductShowcaseRowVisual block={block} imageAlign={imageAlign} />
